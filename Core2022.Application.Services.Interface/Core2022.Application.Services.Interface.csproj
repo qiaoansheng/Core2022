@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\Bin\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core2022.Enum\Core2022.Enum.csproj" />
+    <ProjectReference Include="..\Core2022.Framework.Commons\Core2022.Framework.Commons.csproj" />
+    <ProjectReference Include="..\Core2022.Framework\Core2022.Framework.csproj" />
+  </ItemGroup>
+
+</Project>

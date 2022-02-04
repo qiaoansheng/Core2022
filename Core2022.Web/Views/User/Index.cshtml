@@ -1,0 +1,200 @@
+﻿@{
+    ViewBag.Title = "用户列表";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="layui-row">
+    <div class="layui-col-xs6">
+        <button type="button" action-id="role-add" action-name="授予角色" class="btn btn-w-m btn-success authorization" id="roleAdd">授予角色</button>
+        <button type="button" action-id="user-delete" action-name="禁用用户" class="btn btn-w-m btn-danger authorization" id="userDelete">禁用用户</button>
+        <button type="button" action-id="user-add" action-name="新增用户" class="btn btn-w-m btn-success authorization" id="userAdd">新增用户</button>
+    </div>
+</div>
+
+<table id="UserTable" data-side-pagination="server" data-sort-order="desc" data-mobile-responsive="true"></table>
+
+
+<div class="modal inmodal" id="userAddModel" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" style="color: red">新增用户!</h4>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">姓名：</label>
+                    <input class="form-control" type="text" id="Name" placeholder="请输入姓名" data-pure-clear-button>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">登录名称：</label>
+                    <input class="form-control" type="text" id="UserName" placeholder="请输入登录名称(英文)" data-pure-clear-button>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">密码：</label>
+                    <input class="form-control" type="text" id="Pwd" placeholder="请输入密码" data-pure-clear-button>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">角色列表：</label>
+                    <input class="js-example-data-array-selected text-box" id="roleCombox2" style="width: 350px;" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" id="closeUserAdd">关闭</button>
+                <button type="button" class="btn btn-primary" id="saveUserAdd">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal inmodal" id="myModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 v-if="noRole" class="modal-title" style="color: red">请先创建角色!</h4>
+                <h1 v-else class="modal-title">请选择角色</h1>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="control-label">角色列表：</label>
+                    <input class="js-example-data-array-selected text-box" id="roleCombox" style="width: 350px;" />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-white" id="close-model">关闭</button>
+                <button type="button" action-id="role-add" action-name="授予角色" class="btn btn-primary authorization" id="save-model">提交</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts
+{
+    <script type="text/javascript">
+        $(function () {
+            var $roleCombox = $("#roleCombox");
+
+            $("#UserTable").bootstrapTable({
+                url: "/User/FindUserAll",           //请求后台的URL（*）
+                method: 'GET',                      //请求方式（*）
+                //toolbar: '#toolbar',              //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序
+                sortOrder: "asc",                   //排序方式
+                sidePagination: "client",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: 1,                      //初始化加载第一页，默认第一页,并记录
+                pageSize: 20,                       //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: false,                      //是否显示表格搜索
+                strictSearch: true,
+                showColumns: false,                 //是否显示所有的列（选择显示的列）
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                //height: 500,                      //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "keyId",                  //每一行的唯一标识，一般为主键列
+                showToggle: true,                   //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                  //是否显示父子表
+                columns: [{
+                    checkbox: true,
+                    visible: true                   //是否显示复选框
+                }, {
+                    field: 'name',
+                    title: '姓名',
+                    sortable: true
+                }, {
+                    field: 'userName',
+                    title: '登录名',
+                    sortable: true
+                }, {
+                    field: 'lastLoginTime',
+                    title: '最后登录时间',
+                    sortable: true,
+                    //formatter: emailFormatter
+                }, {
+                    field: 'createTime',
+                    title: '创建时间',
+                    //formatter: linkFormatter
+                }, {
+                    field: 'version',
+                    title: '版本号'
+                },],
+                onLoadSuccess: function () {
+                    console.log(111)
+                },
+                onLoadError: function () {
+                    showTips("数据加载失败！");
+                },
+                onDblClickRow: function (row, $element) {
+                    var id = row.keyId;
+                    //EditViewById(id, 'view');
+
+                },
+            });// End UserTable.bootstrapTable
+
+            $("#roleAdd").click(function () {
+
+            });// End 授予角色
+
+
+            $("#userDelete").click(function () {
+
+            });// End 禁用用户
+
+
+            $("#userAdd").click(function () {
+                $('#userAddModel').modal({ backdrop: 'static', keyboard: false });
+                $('#userAddModel').modal('show');
+            });// End 新增用户
+
+            $("#closeUserAdd").click(function () {
+                $('#roleCombox2').val(null).trigger("change");
+                $('#userAddModel').modal('hide');
+            });// End 关闭新增用户
+
+            $("#saveUserAdd").click(function () {
+                var name = $("#Name").val();
+                var userName = $("#UserName").val();
+                var pwd = $("#Pwd").val();
+                var roleCombox = $("#roleCombox2").val();
+                if (!name) {
+                    alert("请输入姓名！");
+                    return;
+                }
+                if (!userName) {
+                    alert("请输入登录名称！");
+                    return;
+                }
+                if (!pwd) {
+                    alert("请输入密码！");
+                    return;
+                }
+                //if (!roleCombox) {
+                //    alert("请选择角色！");
+                //    return;
+                //}
+                $.ajax({
+                    url: "/User/AddUser",
+                    type: "post",
+                    data: {
+                        Name: name,
+                        UserName: userName,
+                        PassWord: pwd
+                    },
+                    success: function (data) {
+                        if (parseInt(data.status, 10) === 0) {
+                            alert(data.info)
+                        } else {
+                            $('#roleCombox2').val(null).trigger("change");
+                            $('#userAddModel').modal('hide');
+                            $('#UserTable').bootstrapTable('refresh', { silent: true });
+                        }
+                    }
+                })
+            });// End saveUserAdd 保存用户
+
+        });
+    </script>
+}

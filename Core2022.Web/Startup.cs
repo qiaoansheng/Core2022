@@ -1,3 +1,5 @@
+using Autofac;
+using Core2022.Framework.Commons.Autofac;
 using Core2022.Framework.Commons.Injections;
 using Core2022.Framework.Settings;
 using Microsoft.AspNetCore.Builder;
@@ -25,15 +27,26 @@ namespace Core2022.Web
 
         public IConfiguration Configuration { get; }
 
+        /// <summary>
+        /// Autofac 依赖注入
+        /// </summary>
+        /// <param name="builder"></param>
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            // Autofac 注入Orm对象
+            builder.AutofacInjectionOrmModel();
+            // Autofac 注入各层之间的依赖
+            builder.AutofacInjectionServices();
+            builder.RegisterBuildCallback(scope =>
+            {
+                AppSettings.AppAutofacContainer((IContainer)scope);
+            });
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            //services.AddScoped<UserEntity>();
-
-            services.InjectionInjectionOrmModel();
             //注册控制器和视图
             services.AddControllersWithViews();
-            //注册服务
-            services.InjectionServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -41,6 +54,7 @@ namespace Core2022.Web
         {
             // 依赖注入容器
             AppSettings.AppServiceScopeFactory(serviceScopeFactory);
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

@@ -1,12 +1,9 @@
 ﻿using Core2022.Framework.Entity;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Core2022.Domain.Model
 {
+    [Table("Role")]
     public class RoleEntity : BaseOrmModel
     {
     }

@@ -26,7 +26,7 @@ namespace Core2022.Application.Services
             UserRepository.Test();
 
             // 模拟一个 ORM对象转领域对象
-            IUserDomain userDomain = UserRepository.Find(Guid.NewGuid());
+            IUserDomain userDomain = UserRepository.Find(Guid.Parse("b405c2de-3854-437a-9c75-b3fb46e5bd18"));
             userDomain.GetTest();
 
             userDomain.SetTest("11111");

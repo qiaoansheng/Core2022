@@ -1,3 +1,4 @@
+using Autofac.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
@@ -21,6 +22,8 @@ namespace Core2022.Web
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-                });
+                })
+                //×¢²áAutofac
+                .UseServiceProviderFactory(new AutofacServiceProviderFactory());
     }
 }

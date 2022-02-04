@@ -24,10 +24,5 @@ namespace Core2022.Framework.UnitOfWork
                 }
             }
         }
-
-
-
-
-
     }
 }

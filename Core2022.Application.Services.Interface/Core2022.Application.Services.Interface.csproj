@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Core2022.Application.Services.DTO\Core2022.Application.Services.DTO.csproj" />
     <ProjectReference Include="..\Core2022.Enum\Core2022.Enum.csproj" />
     <ProjectReference Include="..\Core2022.Framework.Commons\Core2022.Framework.Commons.csproj" />
     <ProjectReference Include="..\Core2022.Framework\Core2022.Framework.csproj" />

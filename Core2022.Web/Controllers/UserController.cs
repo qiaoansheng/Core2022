@@ -1,9 +1,7 @@
-﻿using Core2022.Application.Services.Interface;
+﻿using Core2022.Application.Services.DTO.User;
+using Core2022.Application.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Core2022.Web.Controllers
 {
@@ -18,8 +16,34 @@ namespace Core2022.Web.Controllers
 
         public IActionResult Index()
         {
-            UserAppService.Test();
             return View();
+        }
+
+        public IActionResult CreateUser(UserRequestDto request)
+        {
+            request.UserName = "2222222";
+            request.PassWord = "1111111";
+            return Json(UserAppService.CreateUser(request));
+        }
+
+        public IActionResult DeleteUser(Guid keyId)
+        {
+            return Json(UserAppService.DeleteUser(keyId));
+        }
+
+        public IActionResult UpdateUser(UserRequestDto request)
+        {
+            return Json(UserAppService.UpdateUser(request));
+        }
+
+        public IActionResult Find(UserRequestDto request)
+        {
+            return Json(UserAppService.Find(request));
+        }
+
+        public IActionResult FindList(UserRequestDto request)
+        {
+            return Json(UserAppService.FindList(request));
         }
 
 

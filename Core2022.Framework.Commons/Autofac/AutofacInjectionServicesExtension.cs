@@ -1,14 +1,10 @@
 ﻿using Autofac;
-using System;
-using Microsoft.Extensions.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
-using Core2022.Framework.Settings;
 using Autofac.Extras.DynamicProxy;
-using System.Collections.Generic;
+using Core2022.Framework.Settings;
 using Core2022.Framework.UnitOfWork;
+using System;
+using System.Collections.Generic;
+using System.Reflection;
 
 namespace Core2022.Framework.Commons.Autofac
 {

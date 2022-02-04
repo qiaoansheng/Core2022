@@ -1,42 +1,64 @@
 ﻿using Core2022.Domain.Interface;
 using Core2022.Domain.Model;
 using Core2022.Framework.Attributes;
+using Core2022.Framework.Domain;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core2022.Domain
 {
     [Injection(typeof(IUserDomain))]
-    public class UserDomain : IUserDomain
+    public class UserDomain : BaseDomain, IUserDomain
     {
-        UserEntity UserEntity;
+        private UserEntity SelfModel
+        {
+            get { return this.Model as UserEntity; }
+            set { this.Model = value; }
+        }
+
         public UserDomain(UserEntity entity)
         {
-            UserEntity = entity;
+            this.Model = entity;
         }
 
-        public Guid GetKeyId()
+        public UserDomain(string userName)
         {
-            return UserEntity.KeyId;
+            this.Model = new UserEntity()
+            {
+                KeyId = Guid.NewGuid(),
+                CreateTime = DateTime.Now,
+                CreateUserKeyId = Guid.Parse("99999999-9999-9999-9999-999999999999"),
+                UserName = userName
+            };
         }
 
-        public string GetTest()
+        public string GetUserName()
         {
-            return UserEntity.Test;
+            return SelfModel.UserName;
         }
 
-        public void SetTest(string text)
+        public void SetUserName(string UserName)
         {
-            UserEntity.Test = text;
+            SelfModel.UserName = UserName;
         }
 
-        public void Test()
+        public string GetPassWord()
         {
-     
+            return SelfModel.PassWord;
+        }
 
+        public void SetPassWord(string PassWord)
+        {
+            SelfModel.PassWord = PassWord;
+        }
+
+        public DateTime GetLastLoginTime()
+        {
+            return SelfModel.LastLoginTime;
+        }
+
+        public void SetLastLoginTime(DateTime LastLoginTime)
+        {
+            SelfModel.LastLoginTime = LastLoginTime;
         }
 
     }

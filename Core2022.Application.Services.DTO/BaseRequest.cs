@@ -1,11 +1,9 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations;
 
-namespace Core2022.Framework.Entity
+namespace Core2022.Application.Services.DTO
 {
-    public class BaseOrmModel
+    public class BaseRequest
     {
-        [Key]
         public Guid KeyId { get; set; }
         public Guid CreateUserKeyId { get; set; }
         public Guid UpdateUserKeyId { get; set; }

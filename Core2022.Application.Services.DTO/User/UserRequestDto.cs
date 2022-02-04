@@ -1,11 +1,8 @@
-﻿using Core2022.Framework.Entity;
-using System;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
 
-namespace Core2022.Domain.Model
+namespace Core2022.Application.Services.DTO.User
 {
-    [Table("User")]
-    public class UserEntity : BaseOrmModel
+    public class UserRequestDto : BaseRequest
     {
         #region 登录
         /// <summary>
@@ -23,6 +20,5 @@ namespace Core2022.Domain.Model
         /// </summary>
         public DateTime LastLoginTime { get; set; }
         #endregion
-
     }
 }

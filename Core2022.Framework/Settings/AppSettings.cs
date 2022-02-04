@@ -23,6 +23,16 @@ namespace Core2022.Framework.Settings
 
         public static IContainer AutofacContainer { get; set; }
 
+        public static T GetT<T>()
+        {
+            return AutofacContainer.Resolve<T>();
+        }
+
+        public static T GetT<T>(string parameterName, object obj)
+        {
+            return AutofacContainer.Resolve<T>(new NamedParameter(parameterName, obj));
+        }
+
         public static InjectionServicesSettings InjectionServices { get; set; }
         static List<Type> efInitType = null;
 

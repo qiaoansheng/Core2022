@@ -8,13 +8,13 @@ namespace Core2022.Framework.UnitOfWork
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
-            optionsBuilder.UseSqlServer(AppSettings.ConnectionString);
+            optionsBuilder.UseSqlServer(Global.ConnectionString);
             base.OnConfiguring(optionsBuilder);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            AppSettings.OrmModelInit.ForEach(t =>
+            Global.OrmModelInit.ForEach(t =>
             {
                 modelBuilder.Model.AddEntityType(t);
             });

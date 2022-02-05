@@ -12,7 +12,7 @@ namespace Core2022.Framework.Commons.Injections
     {
         public static void InjectionInjectionOrmModel(this IServiceCollection services)
         {
-            foreach (var assemblyString in AppSettings.InjectionServices.AssemblyStrings)
+            foreach (var assemblyString in Global.InjectionServices.AssemblyStrings)
             {
                 var serviceTypes = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory + assemblyString).GetTypes();
                 if (serviceTypes != null && serviceTypes.Length > 0)

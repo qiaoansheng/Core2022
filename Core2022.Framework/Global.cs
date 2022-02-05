@@ -1,17 +1,16 @@
 ﻿using Autofac;
 using Core2022.Framework.Entity;
+using Core2022.Framework.Settings;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Core2022.Framework.Settings
+namespace Core2022.Framework
 {
-    public static class AppSettings
+    public static class Global
     {
         /// <summary>
         /// 数据库链接字符串

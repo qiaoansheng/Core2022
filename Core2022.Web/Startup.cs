@@ -1,17 +1,11 @@
 using Autofac;
+using Core2022.Framework;
 using Core2022.Framework.Commons.Autofac;
-using Core2022.Framework.Commons.Injections;
-using Core2022.Framework.Settings;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Core2022.Web
 {
@@ -21,7 +15,7 @@ namespace Core2022.Web
         {
             Configuration = configuration;
             // 初始化配置信息
-            AppSettings.InitAppSettings(configuration);
+            Global.InitAppSettings(configuration);
 
         }
 
@@ -39,7 +33,7 @@ namespace Core2022.Web
             builder.AutofacInjectionServices();
             builder.RegisterBuildCallback(scope =>
             {
-                AppSettings.AppAutofacContainer((IContainer)scope);
+                Global.AppAutofacContainer((IContainer)scope);
             });
         }
 
@@ -53,7 +47,7 @@ namespace Core2022.Web
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IServiceScopeFactory serviceScopeFactory)
         {
             // 依赖注入容器
-            AppSettings.AppServiceScopeFactory(serviceScopeFactory);
+            Global.AppServiceScopeFactory(serviceScopeFactory);
 
             if (env.IsDevelopment())
             {

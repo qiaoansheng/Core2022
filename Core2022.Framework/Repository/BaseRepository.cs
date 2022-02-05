@@ -3,7 +3,6 @@ using Autofac.Extras.DynamicProxy;
 using Core2022.Framework.Attributes;
 using Core2022.Framework.Domain;
 using Core2022.Framework.Entity;
-using Core2022.Framework.Settings;
 using Core2022.Framework.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -56,7 +55,7 @@ namespace Core2022.Framework.Repository
         {
             OrmEntity entity = UnitOfWork.CreateSet<OrmEntity>().Find(keyId);
 
-            IDomain domain = AppSettings.AutofacContainer.Resolve<IDomain>(new NamedParameter("entity", entity));
+            IDomain domain = Global.AutofacContainer.Resolve<IDomain>(new NamedParameter("entity", entity));
 
             return domain;
         }
@@ -93,7 +92,7 @@ namespace Core2022.Framework.Repository
 
         private IDomain Convert(OrmEntity orm)
         {
-            return AppSettings.GetT<IDomain>("entity", orm);
+            return Global.GetT<IDomain>("entity", orm);
         }
 
 

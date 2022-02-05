@@ -25,7 +25,7 @@ namespace Core2022.Framework.UnitOfWork
 
         private static IUnitOfWork CreateUnitOfWork()
         {
-            return AppSettings.AutofacContainer.Resolve<IUnitOfWork>();
+            return Global.AutofacContainer.Resolve<IUnitOfWork>();
         }
     }
 }

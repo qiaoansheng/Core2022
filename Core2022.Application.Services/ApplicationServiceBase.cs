@@ -1,12 +1,7 @@
 ﻿using Core2022.Domain.Interface;
-using Core2022.Framework.Settings;
+using Core2022.Framework;
 using Core2022.Framework.UnitOfWork;
 using Core2022.Repository.Interface;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core2022.Application.Services
 {
@@ -36,7 +31,7 @@ namespace Core2022.Application.Services
 
         public IUserDomain CreateUserDomain(string userName)
         {
-            return AppSettings.GetT<IUserDomain>("userName", userName);
+            return Global.GetT<IUserDomain>("userName", userName);
         }
 
     }

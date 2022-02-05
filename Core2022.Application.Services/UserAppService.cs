@@ -1,6 +1,7 @@
 ﻿using Core2022.Application.Services.DTO.User;
 using Core2022.Application.Services.Interface;
 using Core2022.Domain.Interface;
+using Core2022.Framework;
 using Core2022.Framework.Attributes;
 using Core2022.Framework.Settings;
 using Core2022.Framework.UnitOfWork;
@@ -28,7 +29,7 @@ namespace Core2022.Application.Services
 
             IUnitOfWork uw = GetUnitOfWork();
 
-            AppSettings.GetT<IUserRepository>().Add(userDomain);
+            Global.GetT<IUserRepository>().Add(userDomain);
 
             if (uw.SaveChanges() > 0)
             {

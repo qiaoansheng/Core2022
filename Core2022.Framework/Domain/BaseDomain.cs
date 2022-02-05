@@ -5,84 +5,84 @@ namespace Core2022.Framework.Domain
 {
     public class BaseDomain
     {
-        protected BaseOrmModel Model;
+        protected BaseOrmModel Entity;
 
         public BaseOrmModel GetModel()
         {
-            return Model;
+            return Entity;
         }
 
         public Guid GetKeyId()
         {
-            return Model.KeyId;
+            return Entity.KeyId;
         }
 
         public void SetKeyId(Guid KeyId)
         {
-            Model.KeyId = KeyId;
+            Entity.KeyId = KeyId;
         }
 
         public Guid GetCreateUserKeyId()
         {
-            return Model.CreateUserKeyId;
+            return Entity.CreateUserKeyId;
         }
 
         public void SetCreateUserKeyId(Guid CreateUserKeyId)
         {
-            Model.CreateUserKeyId = CreateUserKeyId;
+            Entity.CreateUserKeyId = CreateUserKeyId;
         }
 
         public Guid GetUpdateUserKeyId()
         {
-            return Model.UpdateUserKeyId;
+            return Entity.UpdateUserKeyId;
         }
 
         public void SetUpdateUserKeyId(Guid UpdateUserKeyId)
         {
-            Model.UpdateUserKeyId = UpdateUserKeyId;
+            Entity.UpdateUserKeyId = UpdateUserKeyId;
         }
 
         public DateTime GetCreateTime()
         {
-            return Model.CreateTime;
+            return Entity.CreateTime;
         }
 
         public void SetCreateTime(DateTime CreateTime)
         {
-            Model.CreateTime = CreateTime;
+            Entity.CreateTime = CreateTime;
         }
 
         public DateTime GetUpdateTime()
         {
-            return Model.UpdateTime;
+            return Entity.UpdateTime;
         }
 
         public void SetUpdateTime(DateTime UpdateTime)
         {
-            Model.UpdateTime = UpdateTime;
+            Entity.UpdateTime = UpdateTime;
         }
 
         public int GetVersion()
         {
-            return Model.Version;
+            return Entity.Version;
         }
 
         public void SetVersion(int Version)
         {
-            Model.Version = Version;
+            Entity.Version = Version;
         }
 
         public bool GetIsDelete()
         {
-            return Model.IsDelete;
+            return Entity.IsDelete;
         }
 
         public void SetIsDelete(bool IsDelete)
         {
-            Model.IsDelete = IsDelete;
+            Entity.IsDelete = IsDelete;
         }
 
-    
+
 
     }
 }

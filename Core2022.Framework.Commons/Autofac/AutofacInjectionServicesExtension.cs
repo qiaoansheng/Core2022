@@ -13,7 +13,7 @@ namespace Core2022.Framework.Commons.Autofac
 
         public static ContainerBuilder AutofacInjectionServices(this ContainerBuilder builder)
         {
-            foreach (var assemblyString in AppSettings.InjectionServices.AssemblyStrings)
+            foreach (var assemblyString in Global.InjectionServices.AssemblyStrings)
             {
                 builder.RegisterType<AutofacAOP>();
                 var assembly = Assembly.LoadFrom(AppDomain.CurrentDomain.BaseDirectory + assemblyString);

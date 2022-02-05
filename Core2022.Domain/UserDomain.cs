@@ -9,20 +9,20 @@ namespace Core2022.Domain
     [Injection(typeof(IUserDomain))]
     public class UserDomain : BaseDomain, IUserDomain
     {
-        private UserEntity SelfModel
+        private UserEntity SelfEntity
         {
-            get { return this.Model as UserEntity; }
-            set { this.Model = value; }
+            get { return this.Entity as UserEntity; }
+            set { this.Entity = value; }
         }
 
         public UserDomain(UserEntity entity)
         {
-            this.Model = entity;
+            this.Entity = entity;
         }
 
         public UserDomain(string userName)
         {
-            this.Model = new UserEntity()
+            this.Entity = new UserEntity()
             {
                 KeyId = Guid.NewGuid(),
                 CreateTime = DateTime.Now,
@@ -33,32 +33,32 @@ namespace Core2022.Domain
 
         public string GetUserName()
         {
-            return SelfModel.UserName;
+            return SelfEntity.UserName;
         }
 
         public void SetUserName(string UserName)
         {
-            SelfModel.UserName = UserName;
+            SelfEntity.UserName = UserName;
         }
 
         public string GetPassWord()
         {
-            return SelfModel.PassWord;
+            return SelfEntity.PassWord;
         }
 
         public void SetPassWord(string PassWord)
         {
-            SelfModel.PassWord = PassWord;
+            SelfEntity.PassWord = PassWord;
         }
 
         public DateTime GetLastLoginTime()
         {
-            return SelfModel.LastLoginTime;
+            return SelfEntity.LastLoginTime;
         }
 
         public void SetLastLoginTime(DateTime LastLoginTime)
         {
-            SelfModel.LastLoginTime = LastLoginTime;
+            SelfEntity.LastLoginTime = LastLoginTime;
         }
 
     }

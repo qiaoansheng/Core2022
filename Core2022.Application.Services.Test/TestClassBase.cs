@@ -2,11 +2,6 @@
 using Core2022.Framework;
 using Core2022.Framework.Commons.Autofac;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core2022.Application.Services.Test
 {

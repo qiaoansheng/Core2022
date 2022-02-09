@@ -3,10 +3,11 @@ using Core2022.Domain.Model;
 using Core2022.Framework.Attributes;
 using Core2022.Framework.Domain;
 using System;
+using System.Threading.Tasks;
 
 namespace Core2022.Domain
 {
-    [Injection(typeof(IUserDomain))]
+    //[Injection(typeof(IUserDomain))]
     public class UserDomain : BaseDomain, IUserDomain
     {
         private UserEntity SelfEntity
@@ -61,5 +62,9 @@ namespace Core2022.Domain
             SelfEntity.LastLoginTime = LastLoginTime;
         }
 
+        public IBaseDomain AsBaseDomain()
+        {
+            return (IBaseDomain)this;
+        }
     }
 }

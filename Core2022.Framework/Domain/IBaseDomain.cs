@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Core2022.Framework.Entity;
+using System;
 
 namespace Core2022.Framework.Domain
 {
     public interface IBaseDomain
     {
+        public BaseOrmModel GetModel();
+
+        public IBaseDomain AsBaseDomain();
+
         public Guid GetKeyId();
         public Guid GetCreateUserKeyId();
         public void SetCreateUserKeyId(Guid CreateUserKeyId);

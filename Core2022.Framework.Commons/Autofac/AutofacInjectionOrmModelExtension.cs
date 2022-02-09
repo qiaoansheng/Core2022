@@ -1,5 +1,4 @@
 ﻿using Autofac;
-using Core2022.Framework.Settings;
 using System;
 using System.Reflection;
 

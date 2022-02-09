@@ -6,6 +6,5 @@ namespace Core2022.Framework.UnitOfWork
     {
         DbSet<OrmEntity> CreateSet<OrmEntity>() where OrmEntity : class;
 
-        int SaveChanges();
     }
 }

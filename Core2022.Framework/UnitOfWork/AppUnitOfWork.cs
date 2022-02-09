@@ -1,5 +1,5 @@
-﻿using Core2022.Framework.Entity;
-using Core2022.Framework.Settings;
+﻿using Core2022.Framework.Authorizations;
+using Core2022.Framework.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Newtonsoft.Json;
@@ -7,14 +7,14 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Core2022.Framework.UnitOfWork
 {
-    public class AppUnitOfWork : DbContext, IUnitOfWork
+    public class AppUnitOfWork : DbContext, IAppUnitOfWork
     {
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-
             optionsBuilder.UseSqlServer(Global.ConnectionString);
             base.OnConfiguring(optionsBuilder);
         }
@@ -28,13 +28,11 @@ namespace Core2022.Framework.UnitOfWork
             base.OnModelCreating(modelBuilder);
         }
 
-
         public DbSet<OrmEntity> CreateSet<OrmEntity>()
           where OrmEntity : class
         {
             return base.Set<OrmEntity>();
         }
-
 
         public new int SaveChanges()
         {
@@ -42,10 +40,20 @@ namespace Core2022.Framework.UnitOfWork
             return base.SaveChanges();
         }
 
+        public async Task<int> SaveChangesAsync()
+        {
+            EFLog();
+            return await base.SaveChangesAsync();
+        }
+
         #region EF Log
         private void EFLog()
         {
             IEnumerable<EntityEntry> list = this.ChangeTracker.Entries();
+            string userName = AuthorizationUtil.GetCurrentUserName();
+            string operatorKeyId = AuthorizationUtil.GetOperatorKeyId();
+            Guid OperatorUserkeyId = AuthorizationUtil.GetCurrentUserKeyId();
+
             foreach (var item in list)
             {
                 //对应的表名
@@ -80,24 +88,23 @@ namespace Core2022.Framework.UnitOfWork
                     case EntityState.Modified:
                         model.UpdateTime = DateTime.Now;
                         model.Version = ++model.Version;
-                        WriteEFUpdateLog(item, tableName);
+                        WriteEFUpdateLog(item, tableName, userName, operatorKeyId, OperatorUserkeyId);
                         break;
                     case EntityState.Added:
                         model.UpdateTime = DateTime.Now;
                         model.CreateTime = DateTime.Now;
                         model.IsDelete = false;
                         model.Version = 0;
-                        WriteEFCreateLog(item, tableName);
+                        WriteEFCreateLog(item, tableName, userName, operatorKeyId, OperatorUserkeyId);
                         break;
                 }
                 #endregion
 
             }
         }
-        private void WriteEFCreateLog(EntityEntry entry, string tableName)
+        private void WriteEFCreateLog(EntityEntry entry, string tableName, string userName, string operatorKeyId, Guid OperatorUserkeyId)
         {
             var propertyList = entry.CurrentValues.Properties;
-            string userName = "系统用户";
             PropertyEntry keyEntity = entry.Property("KeyId");
             Dictionary<string, object> dic = new Dictionary<string, object>();
             foreach (var prop in propertyList)
@@ -111,7 +118,9 @@ namespace Core2022.Framework.UnitOfWork
                 TableName = tableName,
                 OperatorUserName = userName,
                 PrimaryKeyId = Guid.Parse(keyEntity.CurrentValue.ToString()),
-                CreateValue = JsonConvert.SerializeObject(dic)
+                CreateValue = JsonConvert.SerializeObject(dic),
+                OperatorKeyId = operatorKeyId,
+                OperatorUserkeyId = OperatorUserkeyId
             };
             WriteLog(createLog);
         }
@@ -121,10 +130,9 @@ namespace Core2022.Framework.UnitOfWork
         /// </summary>
         /// <param name="entry"></param>
         /// <param name="tableName"></param>
-        private void WriteEFUpdateLog(EntityEntry entry, string tableName)
+        private void WriteEFUpdateLog(EntityEntry entry, string tableName, string userName, string operatorKeyId, Guid OperatorUserkeyId)
         {
             var propertyList = entry.CurrentValues.Properties.Where(i => entry.Property(i.Name).IsModified);
-            string userName = "系统用户";
 
             PropertyEntry keyEntity = entry.Property("KeyId");
             foreach (var prop in propertyList)
@@ -140,7 +148,8 @@ namespace Core2022.Framework.UnitOfWork
                     CurrentValue = entity.CurrentValue,
                     OriginalValue = entity.OriginalValue,
                     PrimaryKeyId = Guid.Parse(keyEntity.CurrentValue.ToString()),
-
+                    OperatorKeyId = operatorKeyId,
+                    OperatorUserkeyId = OperatorUserkeyId
                 };
 
                 if (entity.OriginalValue == null || entity.CurrentValue == null)

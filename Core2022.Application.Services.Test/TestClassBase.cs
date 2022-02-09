@@ -2,6 +2,9 @@
 using Core2022.Framework;
 using Core2022.Framework.Commons.Autofac;
 using Microsoft.Extensions.Configuration;
+using System;
+using System.Security.Principal;
+using System.Threading;
 
 namespace Core2022.Application.Services.Test
 {
@@ -12,6 +15,8 @@ namespace Core2022.Application.Services.Test
 
         public TestClassBase()
         {
+
+
             // 初始化 appsettings
             IConfiguration configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json")
@@ -21,7 +26,7 @@ namespace Core2022.Application.Services.Test
 
             // 初始化 Autofac 容器
             // Autofac 注入Orm对象
-            builder.AutofacInjectionOrmModel();
+            //builder.AutofacInjectionOrmModel();
             // Autofac 注入各层之间的依赖
             builder.AutofacInjectionServices();
 
@@ -34,6 +39,10 @@ namespace Core2022.Application.Services.Test
             Global.AppAutofacContainer(rootContainer);
         }
 
-
+        public void WriteLoginUserInfo(Guid userKeyId,string userName)
+        {
+            Thread.CurrentPrincipal = new GenericPrincipal(
+               new GenericIdentity($"{ Guid.NewGuid() }|{ userKeyId }|{ userName }|"), null);
+        }
     }
 }

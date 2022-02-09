@@ -3,12 +3,14 @@ using Core2022.Application.Services.Interface;
 using Core2022.Domain.Interface;
 using Core2022.Framework;
 using Core2022.Framework.Attributes;
+using Core2022.Framework.Domain;
 using Core2022.Framework.Settings;
 using Core2022.Framework.UnitOfWork;
 using Core2022.Repository.Interface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Core2022.Application.Services
 {
@@ -21,45 +23,53 @@ namespace Core2022.Application.Services
             UserRepository = userRepository;
         }
 
-        public Guid CreateUser(UserRequestDto request)
+        public async Task<Guid> CreateUser(UserRequestDto request)
         {
             IUserDomain userDomain = CreateUserDomain(request.UserName);
             userDomain.SetPassWord(request.PassWord); // 自己随意写的就不加盐加密了
             userDomain.SetLastLoginTime(DateTime.Now);
 
-            IUnitOfWork uw = GetUnitOfWork();
-
             Global.GetT<IUserRepository>().Add(userDomain);
 
-            if (uw.SaveChanges() > 0)
+            if (await SaveChangesAsync() > 0)
             {
                 return userDomain.GetKeyId();
             }
             return Guid.Empty;
         }
 
-        public bool DeleteUser(Guid keyId)
+        public async Task<bool> DeleteUser(Guid keyId)
         {
-            IUserDomain userDomain = UserRepository.Find(keyId);
+            //IBaseDomain baseDomain = await UserRepository.FindAsync(keyId);
+            ////IContravariant<IBaseDomain> contravariant = baseDomain;
+            ////Func<IUserDomain, IBaseDomain> func = (s) => {
+            ////    return baseDomain;
+            ////};
+            ////func(baseDomain);
+            //ICovariant<IBaseDomain> contravariant = new Covariant<IUserDomain>();
+            //IContravariant<IUserDomain> u = new Contravariant<IBaseDomain>();
+
+
+            IUserDomain userDomain = UserRepository.Find(keyId); ;
             userDomain.SetIsDelete(true);
 
-            return SaveChanges() > 0;
+            return await SaveChangesAsync() > 0;
         }
 
-        public bool UpdateUser(UserRequestDto request)
+        public async Task<bool> UpdateUser(UserRequestDto request)
         {
             IUserDomain userDomain = UserRepository.Find(request.KeyId);
             userDomain.SetUserName(request.UserName);
             userDomain.SetPassWord(request.PassWord);
             userDomain.SetLastLoginTime(DateTime.Now);
 
-
-            return SaveChanges() > 0;
+            return await SaveChangesAsync() > 0;
         }
 
-        public UserResponseDto Find(UserRequestDto request)
+        public async Task<UserResponseDto> Find(UserRequestDto request)
         {
-            IUserDomain userDomain = UserRepository.Find(request.KeyId);
+            IBaseDomain baseDomain = await UserRepository.FindAsync(request.KeyId);
+            IUserDomain userDomain = (IUserDomain)baseDomain;
             UserResponseDto respDto = new UserResponseDto()
             {
                 KeyId = userDomain.GetKeyId(),
@@ -76,9 +86,9 @@ namespace Core2022.Application.Services
             return respDto;
         }
 
-        public List<UserResponseDto> FindList(UserRequestDto request)
+        public async Task<List<UserResponseDto>> FindList(UserRequestDto request)
         {
-            List<IUserDomain> userDomains = UserRepository.FindList(i => !i.IsDelete && i.UserName == "2222222").ToList();
+            IList<IUserDomain> userDomains = await UserRepository.FindListAsync(i => !i.IsDelete && i.UserName == request.UserName);
             List<UserResponseDto> respDto = new List<UserResponseDto>();
 
             foreach (var item in userDomains)

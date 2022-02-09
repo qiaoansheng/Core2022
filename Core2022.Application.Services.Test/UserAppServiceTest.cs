@@ -1,6 +1,7 @@
 ﻿using Core2022.Application.Services.DTO.User;
 using Core2022.Application.Services.Interface;
 using Core2022.Framework;
+using Core2022.Framework.Authorizations;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 
@@ -13,7 +14,15 @@ namespace Core2022.Application.Services.Test
         IUserAppService userAppService;
         public UserAppServiceTest()
         {
+            IdentifyInfo identify = new IdentifyInfo()
+            {
+                UserKeyId = Guid.NewGuid(),
+                UserName = "",
+            };
+
             userAppService = Global.GetT<IUserAppService>();
+
+            WriteLoginUserInfo(Guid.Parse("99999999-9999-9999-9999-999999999999"), "单元测试");
         }
 
         [TestMethod]
@@ -24,6 +33,8 @@ namespace Core2022.Application.Services.Test
                 UserName = "222333",
                 PassWord = "111111"
             });
+            Assert.IsNotNull(respDto);
+            Assert.IsNotNull(respDto.Result);
         }
 
         [TestMethod]
@@ -35,10 +46,22 @@ namespace Core2022.Application.Services.Test
                 UserName = "8888881",
                 PassWord = "9999991"
             });
+            Assert.IsNotNull(respDto);
+            Assert.IsTrue(respDto.Result);
         }
 
-
-
+        [TestMethod]
+        public void FindUser()
+        {
+            Guid userKeyId = Guid.Parse("71060A92-8FB9-4F1E-BE51-F3306166DD61");
+            var respDto = userAppService.Find(new UserRequestDto()
+            {
+                KeyId = userKeyId,
+            });
+            Assert.IsNotNull(respDto);
+            Assert.IsNotNull(respDto.Result);
+            Assert.AreEqual(respDto.Result.KeyId, userKeyId);
+        }
 
     }
 }

@@ -6,7 +6,7 @@ using Core2022.Repository.Interface;
 
 namespace Core2022.Repository
 {
-    [Injection(typeof(IUserRepository))]
+    //[Injection(typeof(IUserRepository))]
     public class UserRepository : BaseRepository<IUserDomain, UserEntity>, IUserRepository
     {
 

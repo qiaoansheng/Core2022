@@ -7,15 +7,27 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 
 namespace Core2022.Framework
 {
     public static class Global
     {
+        //[MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TResult AsTask<TBase, TResult>(this Task<TBase> task)
+            //where TBase : TResult
+            where TResult : TBase
+        {
+            return (TResult)task.Result;
+        }
+
+
         /// <summary>
         /// 数据库链接字符串
         /// </summary>
         public static string ConnectionString { get; set; }
+        public static string ReadConnectionString { get; set; }
         public static string OrmModelDLL { get; set; }
 
         public static IServiceScopeFactory ServiceScopeFactory { get; set; }
@@ -59,6 +71,7 @@ namespace Core2022.Framework
         public static void InitAppSettings(IConfiguration configuration)
         {
             ConnectionString = configuration["ConnectionString"];
+            ReadConnectionString = configuration["ReadConnectionString"];
             OrmModelDLL = configuration["OrmModelDLL"];
             InjectionServices = new InjectionServicesSettings(configuration.GetSection("InjectionServices"));
         }

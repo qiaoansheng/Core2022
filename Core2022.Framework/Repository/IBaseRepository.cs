@@ -25,6 +25,14 @@ namespace Core2022.Framework.Repository
         Task<IBaseDomain> FindAsync(Guid keyId, bool readOnly = false);
 
         /// <summary>
+        /// 通过指定 参数 获取领域对象
+        /// </summary>
+        /// <param name="predicate">表达式树</param>
+        /// <param name="readOnly">读写分离，true 读库，false 写库，默认写库</param>
+        /// <returns>返回 领域对象</returns>
+        Task<IBaseDomain> FindAsync(Expression<Func<OrmEntity, bool>> predicate, bool readOnly = false);
+
+        /// <summary>
         /// 通过指定 参数 获取列表数据
         /// </summary>
         /// <param name="predicate">表达式树</param>

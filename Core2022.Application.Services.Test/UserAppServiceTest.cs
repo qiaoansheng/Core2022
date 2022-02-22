@@ -60,8 +60,23 @@ namespace Core2022.Application.Services.Test
             });
             Assert.IsNotNull(respDto);
             Assert.IsNotNull(respDto.Result);
-            Assert.AreEqual(respDto.Result.KeyId, userKeyId);
+            Assert.AreEqual(respDto.Result.Data.KeyId, userKeyId);
         }
+
+        [TestMethod]
+        public void FindAllUser()
+        {
+            var respDto = userAppService.FindList(new UserRequestDto()
+            {
+                UserName = "2222222"
+            });
+            Assert.IsNotNull(respDto);
+            Assert.IsNotNull(respDto.Result);
+
+
+        }
+
+
 
     }
 }

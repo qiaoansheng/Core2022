@@ -15,13 +15,16 @@ namespace Core2022.Framework
     public static class Global
     {
         //[MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static TResult AsTask<TBase, TResult>(this Task<TBase> task)
-            //where TBase : TResult
-            where TResult : TBase
-        {
-            return (TResult)task.Result;
-        }
+        //public static TResult AsTask<TBase, TResult>(this Task<TBase> task)
+        //    //where TBase : TResult
+        //    where TResult : TBase
+        //{
+        //    return (TResult)task.Result;
+        //}
 
+        public static string CurrentLoginUserKey = "qasid";
+
+        static List<Type> efInitType = null;
 
         /// <summary>
         /// 数据库链接字符串
@@ -33,19 +36,7 @@ namespace Core2022.Framework
         public static IServiceScopeFactory ServiceScopeFactory { get; set; }
 
         public static IContainer AutofacContainer { get; set; }
-
-        public static T GetT<T>()
-        {
-            return AutofacContainer.Resolve<T>();
-        }
-
-        public static T GetT<T>(string parameterName, object obj)
-        {
-            return AutofacContainer.Resolve<T>(new NamedParameter(parameterName, obj));
-        }
-
         public static InjectionServicesSettings InjectionServices { get; set; }
-        static List<Type> efInitType = null;
 
         public static List<Type> OrmModelInit
         {
@@ -76,7 +67,6 @@ namespace Core2022.Framework
             InjectionServices = new InjectionServicesSettings(configuration.GetSection("InjectionServices"));
         }
 
-
         public static void AppServiceScopeFactory(IServiceScopeFactory serviceScopeFactory)
         {
             ServiceScopeFactory = serviceScopeFactory;
@@ -88,7 +78,16 @@ namespace Core2022.Framework
             AutofacContainer = autofacContainer;
         }
 
+        public static T GetT<T>()
+        {
+            return AutofacContainer.Resolve<T>();
+        }
+
+        public static T GetT<T>(string parameterName, object obj)
+        {
+            return AutofacContainer.Resolve<T>(new NamedParameter(parameterName, obj));
+        }
+
+
     }
-
-
 }

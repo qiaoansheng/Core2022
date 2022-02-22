@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using Core2022.Framework;
 using Core2022.Framework.Commons.Autofac;
+using Core2022.Framework.Commons.AutoMapper;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Security.Principal;
@@ -29,6 +30,8 @@ namespace Core2022.Application.Services.Test
             //builder.AutofacInjectionOrmModel();
             // Autofac 注入各层之间的依赖
             builder.AutofacInjectionServices();
+            // Autofac 注入 AutoMapper
+            builder.AutofacInjectionAutoMapper();
 
             rootContainer = builder.Build();
 

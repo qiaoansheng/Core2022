@@ -1,8 +1,12 @@
-﻿using Core2022.Application.Services.DTO.User;
+﻿using AutoMapper;
+using Core2022.Application.Services.DTO;
+using Core2022.Application.Services.DTO.User;
 using Core2022.Application.Services.Interface;
 using Core2022.Domain.Interface;
+using Core2022.Enum;
 using Core2022.Framework;
 using Core2022.Framework.Attributes;
+using Core2022.Framework.Authorizations;
 using Core2022.Framework.Domain;
 using Core2022.Framework.Settings;
 using Core2022.Framework.UnitOfWork;
@@ -17,14 +21,47 @@ namespace Core2022.Application.Services
     [Injection(typeof(IUserAppService))]
     public class UserAppService : ApplicationServiceBase, IUserAppService
     {
-
-        public UserAppService(IUserRepository userRepository)
+        private IMapper _mapper;
+        public UserAppService(IUserRepository userRepository, IMapper mapper)
         {
             UserRepository = userRepository;
+            _mapper = mapper;
         }
 
-        public async Task<Guid> CreateUser(UserRequestDto request)
+        /// <summary>
+        /// 登陆
+        /// </summary>
+        /// <param name="userName"></param>
+        /// <param name="password"></param>
+        /// <returns></returns>
+        public async Task<ResponseDto<string>> LogIn(string userName, string password)
         {
+            ResponseDto<string> resp = new ResponseDto<string>();
+            IBaseDomain baseDomain = await UserRepository.FindAsync(i => i.UserName == userName && i.PassWord == password, true);
+            if (baseDomain != null)
+            {
+                IUserDomain userDomain = (IUserDomain)baseDomain;
+                Token token = new Token()
+                {
+                    UserKeyId = userDomain.GetKeyId(),
+                    UserName = userDomain.GetUserName()
+                };
+                resp.Data = CodingUtils.AesEncrypt(Newtonsoft.Json.JsonConvert.SerializeObject(token));
+                resp.Status = ResultConfig.OK;
+                resp.Info = ResultConfig.SuccessfulMessage;
+            }
+            else
+            {
+                resp.Status = ResultConfig.OK;
+                resp.Info = ResultConfig.SuccessfulMessage;
+            }
+            return resp;
+        }
+
+
+        public async Task<ResponseDto<Guid>> CreateUser(UserRequestDto request)
+        {
+            ResponseDto<Guid> resp = new ResponseDto<Guid>();
             IUserDomain userDomain = CreateUserDomain(request.UserName);
             userDomain.SetPassWord(request.PassWord); // 自己随意写的就不加盐加密了
             userDomain.SetLastLoginTime(DateTime.Now);
@@ -33,24 +70,19 @@ namespace Core2022.Application.Services
 
             if (await SaveChangesAsync() > 0)
             {
-                return userDomain.GetKeyId();
+                resp.Data = userDomain.GetKeyId();
+                resp.Status = ResultConfig.OK;
+                resp.Info = ResultConfig.SuccessfulMessage;
+                return resp;
             }
-            return Guid.Empty;
+            resp.Status = ResultConfig.Fail;
+            resp.Info = ResultConfig.FailMessage;
+            return resp;
         }
 
         public async Task<bool> DeleteUser(Guid keyId)
         {
-            //IBaseDomain baseDomain = await UserRepository.FindAsync(keyId);
-            ////IContravariant<IBaseDomain> contravariant = baseDomain;
-            ////Func<IUserDomain, IBaseDomain> func = (s) => {
-            ////    return baseDomain;
-            ////};
-            ////func(baseDomain);
-            //ICovariant<IBaseDomain> contravariant = new Covariant<IUserDomain>();
-            //IContravariant<IUserDomain> u = new Contravariant<IBaseDomain>();
-
-
-            IUserDomain userDomain = UserRepository.Find(keyId); ;
+            IUserDomain userDomain = UserRepository.Find(keyId);
             userDomain.SetIsDelete(true);
 
             return await SaveChangesAsync() > 0;
@@ -66,48 +98,27 @@ namespace Core2022.Application.Services
             return await SaveChangesAsync() > 0;
         }
 
-        public async Task<UserResponseDto> Find(UserRequestDto request)
+        public async Task<ResponseDto<UserResponseDto>> Find(UserRequestDto request)
         {
-            IBaseDomain baseDomain = await UserRepository.FindAsync(request.KeyId);
-            IUserDomain userDomain = (IUserDomain)baseDomain;
-            UserResponseDto respDto = new UserResponseDto()
+            ResponseDto<UserResponseDto> resp = new ResponseDto<UserResponseDto>();
+            IBaseDomain baseDomain = await UserRepository.FindAsync(request.KeyId, true);
+            if (baseDomain != null)
             {
-                KeyId = userDomain.GetKeyId(),
-                CreateUserKeyId = userDomain.GetCreateUserKeyId(),
-                UpdateUserKeyId = userDomain.GetUpdateUserKeyId(),
-                CreateTime = userDomain.GetCreateTime(),
-                UpdateTime = userDomain.GetUpdateTime(),
-                Version = userDomain.GetVersion(),
-                IsDelete = userDomain.GetIsDelete(),
-                UserName = userDomain.GetUserName(),
-                PassWord = userDomain.GetPassWord(),
-                LastLoginTime = userDomain.GetLastLoginTime()
-            };
-            return respDto;
+                IUserDomain userDomain = (IUserDomain)baseDomain;
+                resp.Data = _mapper.Map<UserResponseDto>(userDomain);
+                resp.Status = ResultConfig.OK;
+                resp.Info = ResultConfig.SuccessfulMessage;
+                return resp;
+            }
+            resp.Status = ResultConfig.Fail;
+            resp.Info = ResultConfig.FailMessage;
+            return resp;
         }
 
         public async Task<List<UserResponseDto>> FindList(UserRequestDto request)
         {
             IList<IUserDomain> userDomains = await UserRepository.FindListAsync(i => !i.IsDelete && i.UserName == request.UserName);
-            List<UserResponseDto> respDto = new List<UserResponseDto>();
-
-            foreach (var item in userDomains)
-            {
-                respDto.Add(new UserResponseDto()
-                {
-                    KeyId = item.GetKeyId(),
-                    CreateUserKeyId = item.GetCreateUserKeyId(),
-                    UpdateUserKeyId = item.GetUpdateUserKeyId(),
-                    CreateTime = item.GetCreateTime(),
-                    UpdateTime = item.GetUpdateTime(),
-                    Version = item.GetVersion(),
-                    IsDelete = item.GetIsDelete(),
-                    UserName = item.GetUserName(),
-                    PassWord = item.GetPassWord(),
-                    LastLoginTime = item.GetLastLoginTime()
-                });
-            }
-
+            List<UserResponseDto> respDto = _mapper.Map<List<UserResponseDto>>(userDomains);
             return respDto;
         }
 

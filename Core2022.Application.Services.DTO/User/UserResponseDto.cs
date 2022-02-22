@@ -1,7 +1,17 @@
-﻿using System;
+﻿using AutoMapper;
+using Core2022.Domain;
+using System;
 
 namespace Core2022.Application.Services.DTO.User
 {
+    public class UserResponseProfile : Profile
+    {
+        public UserResponseProfile()
+        {
+            CreateMap<UserDomain, UserResponseDto>();
+        }
+    }
+
     public class UserResponseDto : BaseResponseDto
     {
         #region 登录

@@ -9,6 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="11.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core2022.Domain\Core2022.Domain.csproj" />
     <ProjectReference Include="..\Core2022.Enum\Core2022.Enum.csproj" />
     <ProjectReference Include="..\Core2022.Framework\Core2022.Framework.csproj" />
   </ItemGroup>

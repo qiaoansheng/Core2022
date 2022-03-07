@@ -1,7 +1,10 @@
 using Autofac;
+using Autofac.Annotation;
+using Autofac.Extensions.DependencyInjection;
 using Core2022.Framework;
 using Core2022.Framework.Commons.Autofac;
 using Core2022.Framework.Commons.AutoMapper;
+using Core2022.Framework.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -47,6 +50,7 @@ namespace Core2022.API
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Core2022.API", Version = "v1" });
             });
+            services.AddHttpContextAccessor();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -69,6 +73,8 @@ namespace Core2022.API
             {
                 endpoints.MapControllers();
             });
+
+            HttpContext.ServiceProvider = app.ApplicationServices.GetAutofacRoot();
         }
     }
 }

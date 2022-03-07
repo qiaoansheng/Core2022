@@ -47,7 +47,7 @@ namespace Core2022.Application.Services.Test
                 PassWord = "9999991"
             });
             Assert.IsNotNull(respDto);
-            Assert.IsTrue(respDto.Result);
+            Assert.IsTrue(respDto.Result.Data);
         }
 
         [TestMethod]

@@ -18,7 +18,11 @@ namespace Core2022.API
                new GenericIdentity($"{ Guid.NewGuid() }|{ userKeyId }|{ userName }|"), null);
         }
 
-
+        public void SetDefaultUser()
+        {
+            Thread.CurrentPrincipal = new GenericPrincipal(
+               new GenericIdentity($"{ Guid.NewGuid() }|{ "99999999-9999-9999-9999-999999999999" }|{ "manage" }|"), null);
+        }
 
     }
 }

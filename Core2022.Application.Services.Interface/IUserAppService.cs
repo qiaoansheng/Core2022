@@ -18,9 +18,9 @@ namespace Core2022.Application.Services.Interface
 
         Task<ResponseDto<Guid>> CreateUser(UserRequestDto request);
 
-        Task<bool> DeleteUser(Guid keyId);
+        Task<ResponseDto<bool>> DeleteUser(Guid keyId);
 
-        Task<bool> UpdateUser(UserRequestDto request);
+        Task<ResponseDto<bool>> UpdateUser(UserRequestDto request);
 
         Task<ResponseDto<UserResponseDto>> Find(UserRequestDto request);
 

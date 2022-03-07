@@ -1,5 +1,8 @@
-﻿using Core2022.Framework;
+﻿using Core2022.Application.Services.DTO;
+using Core2022.Enum;
+using Core2022.Framework;
 using Core2022.Framework.Authorizations;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace Core2022.API.Filters
@@ -8,11 +11,18 @@ namespace Core2022.API.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            string token = "";
+            string token;
             context.HttpContext.Request.Cookies.TryGetValue(Global.CurrentLoginUserKey, out token);
             if (string.IsNullOrEmpty(token))
             {
                 // 未登录
+                context.Result = new JsonResult(new ResponseDto<string>()
+                {
+                    Data = null,
+                    Status = ResultConfig.Fail,
+                    Info = ResultConfig.FailMessage,
+                    Msg = "Token错误"
+                });
             }
             else
             {
@@ -22,8 +32,6 @@ namespace Core2022.API.Filters
             }
             base.OnActionExecuting(context);
         }
-
-
 
     }
 }

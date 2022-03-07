@@ -1,20 +1,23 @@
 ﻿using Autofac;
-using System.Threading;
+using Core2022.Framework.Web;
 
 namespace Core2022.Framework.UnitOfWork
 {
+    /// <summary>
+    /// 创建工作单元
+    /// 保证线程内唯一
+    /// </summary>
     public class AppUnitOfWorkFactory
     {
-        private static ThreadLocal<IAppUnitOfWork> appUnitOfWorkThreadLocal = new ThreadLocal<IAppUnitOfWork>(() => CreateUnitOfWork());
-        private static ThreadLocal<IReadUnitOfWork> readUnitOfWorkThreadLocal = new ThreadLocal<IReadUnitOfWork>(() => CreateReadUnitOfWork());
-
         public static IAppUnitOfWork GetAppUnitOfWorkRepository()
         {
-            if (appUnitOfWorkThreadLocal.Value == null)
+            IAppUnitOfWork appUnitOfWork = HttpContext.Current.Items["AppUnitOfWork"] as IAppUnitOfWork;
+            if (appUnitOfWork == null)
             {
-                appUnitOfWorkThreadLocal.Value = CreateUnitOfWork();
+                appUnitOfWork = CreateUnitOfWork();
+                HttpContext.Current.Items["AppUnitOfWork"] = appUnitOfWork;
             }
-            return appUnitOfWorkThreadLocal.Value;
+            return appUnitOfWork;
         }
 
         private static IAppUnitOfWork CreateUnitOfWork()
@@ -25,11 +28,13 @@ namespace Core2022.Framework.UnitOfWork
         #region 只读
         public static IReadUnitOfWork GetReadUnitOfWorkRepository()
         {
-            if (readUnitOfWorkThreadLocal.Value == null)
+            IReadUnitOfWork readUnitOfWork = HttpContext.Current.Items["ReadUnitOfWork"] as IReadUnitOfWork;
+            if (readUnitOfWork == null)
             {
-                readUnitOfWorkThreadLocal.Value = CreateReadUnitOfWork();
+                readUnitOfWork = CreateReadUnitOfWork();
+                HttpContext.Current.Items["ReadUnitOfWork"] = readUnitOfWork;
             }
-            return readUnitOfWorkThreadLocal.Value;
+            return readUnitOfWork;
         }
 
         private static IReadUnitOfWork CreateReadUnitOfWork()

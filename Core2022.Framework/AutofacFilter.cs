@@ -48,7 +48,7 @@ namespace Core2022.Framework
                 if (invocation.Method.Name == "Find")
                 {
                     IBaseDomain domain = (IBaseDomain)ret;
-                    BaseOrmModel model = domain.GetModel();
+                    BaseOrmModel model = domain?.GetModel();
 
                     DBLogSeleteModel logModel = new DBLogSeleteModel()
                     {

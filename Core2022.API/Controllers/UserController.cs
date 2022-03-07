@@ -23,6 +23,7 @@ namespace Core2022.API.Controllers
         [HttpPost]
         public async Task<ResponseDto<string>> Login(UserRequestDto req)
         {
+            SetDefaultUser();
             ResponseDto<string> resp = await UserAppService.LogIn(req.UserName, req.PassWord);
             if (resp.Status == ResultConfig.OK && !string.IsNullOrEmpty(resp.Data))
             {
@@ -55,7 +56,21 @@ namespace Core2022.API.Controllers
             return resp;
         }
 
+        [HttpPost]
+        [AuthorizeFilter]
+        public ResponseDto<bool> DeleteUser(UserRequestDto req)
+        {
+            ResponseDto<bool> resp = UserAppService.DeleteUser(req.KeyId).Result;
+            return resp;
+        }
 
+        [HttpPost]
+        [AuthorizeFilter]
+        public ResponseDto<bool> UpdateUser(UserRequestDto req)
+        {
+            ResponseDto<bool> resp = UserAppService.UpdateUser(req).Result;
+            return resp;
+        }
 
 
     }
